@@ -13,7 +13,7 @@ public class Robots implements Comparable<Robots>{
     private int numeroSerie;
     private int porcentajeVida;
 
-    public Robots() {
+    public Robots(int parseInt, int parseInt1) {
         this.numeroSerie = UtilidadesMetodos.numeroEnteroRandom(1,1000 );
         this.porcentajeVida = UtilidadesMetodos.numeroEnteroRandom(1, 100);
     }

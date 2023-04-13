@@ -28,19 +28,24 @@ public class MainFicheroLeyendo {
     public static void main(String[] args) {
         // TODO code application logic here
         
-    
+         List<Robots> listaRobots = new ArrayList<>();
+        for (int i = 0; i < 50; i++) {
+            listaRobots.add();
         }
         
-    }
+         generarFicheroRobots("ListaDeRobots", listaRobots);
+        }
+        
+    
     
     
     
       public static void generarFicheroRobots(String nombreFichero, List<Robots> listaRob) {
        
-        // Se cre ael fichero con una ruta a la carpeta.
+        // Se crea ael fichero con una ruta a la carpeta.
         String idFichero = nombreFichero + ".txt";
         //Tipo de archivo texto
-        String tmp;
+        String tmp;//Variable String que mas adelante voy a usar
         //Uso del BiffederWiter.
         try ( BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero))) {
             //For Echar que le paso la lista, y el tmp, le ponemos que tenga el 
@@ -62,7 +67,7 @@ public class MainFicheroLeyendo {
         public static void leerFicheroRobots(String nombreFichero, String formato) {
 
         
-        // Se lee el fichero con los datos que tenga el ejemplo
+        // Se lee el fichero con los datos que tenga el ejemplo .txt(formato)
         String idFichero = nombreFichero + "." + formato;
 
         
@@ -82,7 +87,7 @@ public class MainFicheroLeyendo {
                 linea = datosFichero.nextLine();
                 // Se guarda en el array de String que se llama Tokens  
                 tokens = linea.split(";");
-                //Se generan los tokens
+                //Se generan los tokens en la lista con los tokens 
                 System.out.println("Robot: " + tokens[0] + " - Vida: " + tokens[1]);
 
             }

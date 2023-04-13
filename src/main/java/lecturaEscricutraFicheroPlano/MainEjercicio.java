@@ -31,14 +31,14 @@ public class MainEjercicio {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-
+        //Meter el archico e src/main/java y pega el archivo de localizaciones
         String fileName = "localizaciones.txt"; // Nombre del archivo de texto
         List<String> lines = leerFichero(fileName); // Leer el archivo de texto y almacenar cada línea en una lista
         List<String> localizaciones = extraerctLocalizaciones(lines); // Extraer las localizaciones de cada línea y almacenarlas en una nueva lista
         imprimirtLista(localizaciones); // Imprimir la lista de localizaciones por pantalla
-        Map<String, Integer> contadorLocalizaciones = contarLocalizaciones((File) localizaciones); // Contar cuántas veces aparece cada localización en la lista
-        imprimirMap( contadorLocalizaciones); // Imprimir el resultado del Map por pantalla
-        //writeMapToFile(contadorLocalizaciones, "contadorLocalizaciones.txt"); // Escribir el resultado del Map en un archivo de texto
+        Map<String, Integer> contadorLocalizaciones = countLocalizaciones2(localizaciones); // Contar cuántas veces aparece cada localización en la lista
+        imprimirMap(contadorLocalizaciones); // Imprimir el resultado del Map por pantalla
+       
     }
 
     public static void leerFichero(String nombreFichero, String formato) {
@@ -73,7 +73,7 @@ public class MainEjercicio {
 
     // Método para leer un archivo de texto y almacenar cada línea en una lista
     public static List<String> leerFichero(String nombreDelArchivo) {
-           List<String> lineas=new ArrayList<>();
+        List<String> lineas = new ArrayList<>();
         try {
             lineas = Files.readAllLines(Paths.get("localizaciones.txt"),
                     StandardCharsets.UTF_8);
@@ -83,7 +83,7 @@ public class MainEjercicio {
         for (String linea : lineas) {
             System.out.println(linea);
         }
-        
+
         return lineas;
     }
 
@@ -136,4 +136,17 @@ public class MainEjercicio {
         }
         System.out.println("--------------------------------------------------------");
     }
+
+    // Método para contar cuántas veces aparece cada localización en una lista
+    public static Map<String, Integer> countLocalizaciones2(List<String> localizaciones) {
+        Map<String, Integer> contadorLocalizaciones = new HashMap<>();
+        for (String localizacion : localizaciones) {
+            if (contadorLocalizaciones.containsKey(localizacion)) {
+                contadorLocalizaciones.put(localizacion, contadorLocalizaciones.get(localizacion) + 1);
+            }
+        }
+        return contadorLocalizaciones;
+    
+}
+    
 }

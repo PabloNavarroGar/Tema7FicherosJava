@@ -5,9 +5,11 @@
 package lecturaEscricutraFicheroPlano;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -33,12 +35,17 @@ public class MainEjercicio {
         // TODO code application logic here
         //Meter el archico e src/main/java y pega el archivo de localizaciones
         String fileName = "localizaciones.txt"; // Nombre del archivo de texto
-        List<String> lines = leerFichero(fileName); // Leer el archivo de texto y almacenar cada línea en una lista
-        List<String> localizaciones = extraerctLocalizaciones(lines); // Extraer las localizaciones de cada línea y almacenarlas en una nueva lista
+        System.out.println("Leyendo el Fichero");
+        List<String> lineas = leerFichero(fileName); // Leer el archivo de texto y almacenar cada línea en una lista
+        List<String> localizaciones = extraerctLocalizaciones(lineas); // Extraer las localizaciones de cada línea y almacenarlas en una nueva lista
+        System.out.println("Lista que ha conseguido con la Expresion regular las palabras clave");
         imprimirtLista(localizaciones); // Imprimir la lista de localizaciones por pantalla
-        Map<String, Integer> contadorLocalizaciones = countLocalizaciones2(localizaciones); // Contar cuántas veces aparece cada localización en la lista
-        imprimirMap(contadorLocalizaciones); // Imprimir el resultado del Map por pantalla
-       
+        System.out.println("Lista Map que ha conseguido cada localizacion del archivo");
+        Map<String, Integer> contador = contadortLocalizaciones(localizaciones); //Contar cuántas veces aparece cada localización en la lista
+
+        imprimirMap(contador); // Imprimir el resultado del Map por pantalla
+        
+        generarFicheroContador("ContadorDeLocalizaciones", contador);
     }
 
     public static void leerFichero(String nombreFichero, String formato) {
@@ -53,7 +60,7 @@ public class MainEjercicio {
         System.out.println("Se esta  leyendo el fichero: " + idFichero);
 
         // Inicialización del flujo "datosFichero" en función del archivo llamado "idFichero"
-        // Estructura try-with-resources. Permite cerrar los recursos una vez finalizadas
+        // try-with-resources. Permite cerrar los una vez hecho
         // las operaciones con el archivo
         try ( Scanner datosFichero = new Scanner(new File(idFichero), "UTF-8")) {
             // hasNextLine va a devolver true siempre que haya una linea que tenga que leer
@@ -61,9 +68,9 @@ public class MainEjercicio {
                 //Se guarda la línea completa en un String
                 linea = datosFichero.nextLine();
                 // Se guarda en el array de String que se llama Tokens  
-                tokens = linea.split("﻿Localizacion: [N|S|E|O]");
+                tokens = linea.split("﻿Localizacion: [NSEO]");
                 //Se generan los tokens en la lista con los tokens 
-                System.out.println("Norte: " + tokens[0] + " - Sur: " + tokens[1]);
+                System.out.println("Numero total de localizaciones : " + tokens[0]);
 
             }
         } catch (FileNotFoundException e) {
@@ -90,11 +97,13 @@ public class MainEjercicio {
     // Método para extraer las localizaciones de cada línea y almacenarlas en una nueva lista
     public static List<String> extraerctLocalizaciones(List<String> lista) {
         List<String> localizaciones = new ArrayList<>();
-        Pattern pattern = Pattern.compile("Localizacion: \\[([NSOE])\\]");
+        //Pattern pattern = Pattern.compile("Localizacion: [N|S|O|E]");
+
+        Pattern pattern = Pattern.compile(" [NSEO]");
         for (String line : lista) {
             Matcher matcher = pattern.matcher(line);
             if (matcher.find()) {
-                localizaciones.add(matcher.group(1));
+                localizaciones.add(matcher.group());
             }
         }
         return localizaciones;
@@ -107,46 +116,51 @@ public class MainEjercicio {
         }
     }
 
-    public static Map<String, Integer> contarLocalizaciones(File archivo) {
-        Map<String, Integer> map = new HashMap<>();
-
-        try ( BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                Pattern pattern = Pattern.compile("Localizacion: \\[(N|S|E|O)\\]");
-                Matcher matcher = pattern.matcher(linea);
-
-                while (matcher.find()) {
-                    String localizacion = matcher.group(1);
-                    map.put(localizacion, map.getOrDefault(localizacion, 0) + 1);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return map;
-    }
-
     // Método para imprimir un Map por pantalla
     public static void imprimirMap(Map<String, Integer> map) {
-        System.out.println("------------ Fichero contadorLocalizaciones ------------");
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            System.out.println(entry.getKey() + " - " + entry.getValue());
+        System.out.println("------------ Fichero contador deLocalizaciones ------------");
+        for (Map.Entry<String, Integer> entrada : map.entrySet()) {
+            System.out.println(entrada.getKey() + " - " + entrada.getValue());
         }
         System.out.println("--------------------------------------------------------");
+
     }
 
     // Método para contar cuántas veces aparece cada localización en una lista
-    public static Map<String, Integer> countLocalizaciones2(List<String> localizaciones) {
+    public static Map<String, Integer> contadortLocalizaciones(List<String> localizaciones) {
         Map<String, Integer> contadorLocalizaciones = new HashMap<>();
         for (String localizacion : localizaciones) {
             if (contadorLocalizaciones.containsKey(localizacion)) {
                 contadorLocalizaciones.put(localizacion, contadorLocalizaciones.get(localizacion) + 1);
+            } else {
+                contadorLocalizaciones.put(localizacion, 1);
             }
         }
         return contadorLocalizaciones;
+
+    }
     
-}
     
+       public static void generarFicheroContador(String nombreFichero, Map<String,Integer> localizaciones) {
+       
+        // Se crea ael fichero con una ruta a la carpeta.
+        String idFichero = nombreFichero + ".txt";
+        //Tipo de archivo texto
+        String tmp;//Variable String que mas adelante voy a usar
+        //Uso del BiffederWiter.
+        try ( BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero))) {
+            //For Echar que le paso la lista, y el tmp, le ponemos que tenga el 
+            // numero de seria al empezar y luego el porcdntaje de vida
+            for ( String s : localizaciones.keySet()) {
+                 tmp =;
+                flujo.write(tmp);
+                flujo.newLine();
+            }
+            flujo.flush();
+            System.out.println("Fichero " + nombreFichero + " se ha creado sin problemas.");
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }

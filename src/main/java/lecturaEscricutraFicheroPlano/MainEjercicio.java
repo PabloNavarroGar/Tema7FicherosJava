@@ -4,11 +4,10 @@
  */
 package lecturaEscricutraFicheroPlano;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -44,8 +43,8 @@ public class MainEjercicio {
         Map<String, Integer> contador = contadortLocalizaciones(localizaciones); //Contar cuántas veces aparece cada localización en la lista
 
         imprimirMap(contador); // Imprimir el resultado del Map por pantalla
-        
-        generarFicheroContador("ContadorDeLocalizaciones", contador);
+        System.out.println("Se va a imprimir ahora el Contador, mire en la carpeta Raiz");
+        generarDocumentoContador(contador, "ContadorLocalizaciones", "txt");
     }
 
     public static void leerFichero(String nombreFichero, String formato) {
@@ -139,28 +138,25 @@ public class MainEjercicio {
         return contadorLocalizaciones;
 
     }
-    
-    
-       public static void generarFicheroContador(String nombreFichero, Map<String,Integer> localizaciones) {
-       
-        // Se crea ael fichero con una ruta a la carpeta.
-        String idFichero = nombreFichero + ".txt";
-        //Tipo de archivo texto
-        String tmp;//Variable String que mas adelante voy a usar
-        //Uso del BiffederWiter.
+        //Le meto en los parametro el Map, junto con el String del fichero y el formato
+     public static void generarDocumentoContador(Map<String, Integer> map, String nomFichero, String formato) {
+        String idFichero = nomFichero + "." + formato;
+        String tmp;
+        //---
         try ( BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero))) {
-            //For Echar que le paso la lista, y el tmp, le ponemos que tenga el 
-            // numero de seria al empezar y luego el porcdntaje de vida
-            for ( String s : localizaciones.keySet()) {
-                 tmp =;
+
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                String key = entry.getKey();
+                int val = entry.getValue();
+                tmp = key + " - " + val;
                 flujo.write(tmp);
                 flujo.newLine();
             }
             flujo.flush();
-            System.out.println("Fichero " + nombreFichero + " se ha creado sin problemas.");
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+
     }
 
 }

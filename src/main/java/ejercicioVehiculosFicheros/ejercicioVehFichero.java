@@ -193,7 +193,31 @@ public class ejercicioVehFichero {
 
     }
 
-   //Falta el metodo d e
+   //Falta el metodo del documento de los tokenssssss
+    
+    
+    
+    // para calcular cuantos coches rojos hay
+    /*
+    El predicate es una expesion lamba que devuleve un boolean
+    Predicate<Vehiculo> predicadoColor = (v)->v.getColor().equalsIgnoreCase(rojo);
+    long contador = 0;
+    contador=listaVehiculos.stream().filter(predicadoColor).count();
+    
+    
+    Como imprimiria por pantalla todas las marcas diferentes o utra cosa
+    stream con mao que recibe funtions
+    distinct para no repita,hago el mapeo, y se imprime por for each
+    listaVehiculos.stream()
+            .map(v->v.getMarca())
+            .distict()
+            .forEach(System.out::printl);    
+    
+    
+    */
+    
+    
+    
 
     //Le meto en los parametro de la lista, junto con el String del fichero y el formato
     public static void generarDocumentIndividual(String nomFichero, String formato, List<Vehiculo> lista) {

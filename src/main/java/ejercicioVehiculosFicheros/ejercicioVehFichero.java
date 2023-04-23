@@ -29,6 +29,22 @@ public class ejercicioVehFichero {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+         //--- Generamos la lista gracias a nuestro método
+        List<Vehiculo> lista = generarLista();
+        //---
+        System.out.println("IMPRIMIMOS NUESTRA LISTA DE VEHÍCULOS");
+        lista.forEach(System.out::println);
+        //--- Generamos el fichero que contendrá la información de nuestros vehículos
+        generarFicheroVehiculos("vehículos", "txt", lista);
+        //--- Guardamos nuestra lista ordenada que hemos obtenido desde el archivo
+        List<Vehiculo> listaOrdenada = generarListaVehiculosDesdeArchivo("vehículos", "txt", ":");
+        //---
+        System.out.println("\nLista OrdenadaA\n");
+        listaOrdenada.forEach(System.out::println);
+        //---Generamos cada uno de nuestros ficheros de cada uno de los tipos de vehículos
+        generarFicherosTipoVehiculo(listaOrdenada);
+        
+        
     }
 
     //Para generar una lisa crando los 10 vehiculos, voy a crear una lista, con los atributos de los vehiculos
@@ -167,7 +183,7 @@ public class ejercicioVehFichero {
         try ( BufferedWriter flujo = new BufferedWriter(new FileWriter(idFichero))) {
             //Cada línea del fichero estará compuesta por un número, un espacio, un guión, un
             //espacio y los datos del vehículo en cuestión. El número de cada línea será 0, 1 o 2
-            //si el objeto es un Turismo, un Deportivo o una Furgoneta, respectivamente. 
+            //si el objeto es un Turismo, un Deportivo o una Furgoneta.
             //Explicita
             for (Vehiculo v : lista) {
                 if (v instanceof Furgoneta) {
@@ -215,6 +231,58 @@ public class ejercicioVehFichero {
     
     
     */
+    
+    public static List<Vehiculo> generarListaVehiculosDesdeArchivo(String nomFichero, String formato, String separador) {
+        List<Vehiculo> lista = new ArrayList<>();
+        Comparator<Vehiculo> criterioMarca = (v1, v2) -> v1.getMarca().compareToIgnoreCase(v2.getMarca());
+        //---
+        String idFichero = nomFichero + "." + formato;
+
+        // Variables para guardar los datos que se van leyendo
+        String[] tokens;
+        String linea;
+        //---
+
+        //---
+        Vehiculo v = null;
+        //---
+        try ( Scanner datosFichero = new Scanner(new File(idFichero), "UTF-8")) {
+            // hasNextLine devuelve true mientras haya líneas por leer
+            while (datosFichero.hasNextLine()) {
+                // Guarda la línea completa en un String
+                linea = datosFichero.nextLine();
+                // Se guarda en el array de String cada elemento de la
+                // línea en función del carácter separador de campos del fichero CSV
+                tokens = linea.split(separador);
+                // Convierte en String tokens
+                //--- Dependiendo de como empiece la línea sabremos que tipo de objeto es
+                //--- Usamos los tokens[] para guardar cada atributo según el constructor
+                if (linea.contains("0 - ")) {//--- Si es un turismo
+                    tokens[0] = tokens[0].replaceAll("0 - ", "");
+                    //v = new Turismo(Integer.valueOf(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], Double.parseDouble(tokens[5]), Integer.parseInt(tokens[7]), Boolean.parseBoolean(tokens[8]));
+                    v = new Turismo(Integer.parseInt(tokens[0]), Long.valueOf(tokens[1]), String.valueOf(tokens[2]), tokens[3], tokens[4], tokens[5], Integer.parseInt(tokens[7]), Boolean.parseBoolean(tokens[8]));
+                } else if (linea.contains("1 - ")) {
+                    //--- Si es un deportivo                   
+                    tokens[0] = tokens[0].replaceAll("1 - ", "");
+                    //v = new Deportivo(Long.valueOf(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], Double.parseDouble(tokens[5]), Integer.parseInt(tokens[7]));
+                    v= new Deportivo(0, Long.MAX_VALUE, linea, linea, linea, linea, 0, true);
+                } else {
+                    //--- Si es una furgoneta
+                    tokens[0] = tokens[0].replaceAll("2 - ", "");
+                    //v = new Furgoneta(Long.valueOf(tokens[0]), tokens[1], tokens[2], tokens[3], tokens[4], Double.parseDouble(tokens[5]), Integer.parseInt(tokens[7]), Integer.parseInt(tokens[8]));
+                    v = new Furgoneta(0, 0, Long.MAX_VALUE, linea, linea, linea, linea, 0, true);
+                }
+                //--- Añadimos el Vehículo a la lista
+                lista.add(v);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+        //---
+        Collections.sort(lista, criterioMarca);
+        return lista;
+
+    }
     
     
     
